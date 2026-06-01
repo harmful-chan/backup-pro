@@ -1,0 +1,30 @@
+services:
+  web:
+    stdin_open: true
+    tty: true
+    ports:
+      - 8081:80
+    volumes:
+      - ./data/web:/app/www
+    image: netcccyun/dnsmgr
+    depends_on:
+      - db
+    networks:
+      - dnsmgr-network
+
+  db:
+    restart: always
+    volumes:
+      - ./data/conf/my.cnf:/etc/mysql/my.cnf
+      - ./data/logs:/logs
+      - ./data/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - TZ=Asia/Shanghai
+    image: mysql:5.7
+    networks:
+      - dnsmgr-network
+
+networks:
+  dnsmgr-network:
+    driver: bridge
