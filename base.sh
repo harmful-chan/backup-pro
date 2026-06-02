@@ -1,9 +1,6 @@
 #!/bin/bash
 
-ARGS=(
-	"-r" "rclone:cos:backup-1359314811/vaultwarden"
-	"--password-file" "$HOME/.restic/password"
-)
+
 is_running=false
 if [ $(sudo docker compose ps -q | wc -l) -gt 0 ];then
 	is_running=true
@@ -20,13 +17,6 @@ function dockup(){
         fi
 }
 
-function backup()
-{
-	dockdown
-	restic ${ARGS[@]} backup ./data
-	dockup
-}
-
 function restore(){
 	mkdir -p ./restore/latest
 	restic ${ARGS[@]} restore latest --target ./restore/latest	
@@ -36,5 +26,19 @@ function snapshots(){
 	restic ${ARGS[@]} snapshots
 }
 
+function init(){
+	restic ${ARGS[@]} init
+}
 
-"$1"
+function install(){
+	sudo apt install -y restic
+}
+function restore(){
+        SNAPSHOT="${1:-latest}"
+        TARGET="./restore/$SNAPSHOT"
+
+        mkdir -p "$TARGET"
+        restic "${ARGS[@]}" restore "$SNAPSHOT" --target "$TARGET"
+}
+
+
