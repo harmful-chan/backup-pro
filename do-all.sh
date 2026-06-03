@@ -8,7 +8,7 @@ for dofile in "$BASE_DIR"/*/do.sh; do
     project_dir="$(dirname "$dofile")"
     project_name="$(basename "$project_dir")"
 
-    echo "========== $project_name =========="
+    echo "=====$(date +"%Y-%m-%d %H:%M:%S")===== $project_name =========="
 
     (
         cd "$project_dir"
